@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const app = express();
 
+// Connect to MongoDB
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -17,12 +18,11 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cookieParser());
 
-// Define allowed origins
-const prodOrigins = [process.env.ORIGIN_1, process.env.ORIGIN_2];
-const devOrigin = ['http://localhost:5173'];
-const allowedOrigins = process.env.NODE_ENV === 'production' ? prodOrigins : devOrigin;
+// CORS Configuration
+const allowedOrigins = process.env.NODE_ENV === 'production'
+    ? [process.env.ORIGIN_1, process.env.ORIGIN_2]
+    : ['http://localhost:5173']; // Local development
 
-// Configure CORS middleware to accept multiple origins
 app.use(cors({
     origin: (origin, callback) => {
         if (allowedOrigins.includes(origin) || !origin) { // Allow requests with no origin (e.g., Postman)
@@ -31,7 +31,7 @@ app.use(cors({
             callback(new Error('Not allowed by CORS'));
         }
     },
-    credentials: true, // Allow credentials
+    credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
 
