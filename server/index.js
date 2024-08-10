@@ -25,7 +25,7 @@ const allowedOrigins = process.env.NODE_ENV === 'production' ? prodOrigins : dev
 // Configure CORS middleware to accept multiple origins
 app.use(cors({
     origin: (origin, callback) => {
-        if (allowedOrigins.includes(origin)) {
+        if (allowedOrigins.includes(origin) || !origin) { // Allow requests with no origin (e.g., Postman)
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
