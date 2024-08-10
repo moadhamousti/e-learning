@@ -40,9 +40,10 @@ export const UserContext = createContext({});
 export function UserContextProvider({ children }) {
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
+    const apiUrl = process.env.REACT_APP_API_BASE_URL;
 
     useEffect(() => {
-        axios.get('/api/auth/profile', { withCredentials: true })
+        axios.get(`${apiUrl}/api/auth/profile`, { withCredentials: true })
             .then(({ data }) => {
                 console.log('User data:', data); // Log the user data
                 setUser(data); // Ensure data has a name field
@@ -51,11 +52,11 @@ export function UserContextProvider({ children }) {
                 console.error('Error fetching user profile:', error);
                 setUser(null);
             });
-    }, []);
+    }, [apiUrl]);
 
     const login = async (email, password) => {
         try {
-            const { data } = await axios.post('/api/auth/login', { email, password }, { withCredentials: true });
+            const { data } = await axios.post(`${apiUrl}/api/auth/login`, { email, password }, { withCredentials: true });
             setUser(data);
         } catch (error) {
             console.error('Error logging in:', error);
@@ -64,7 +65,7 @@ export function UserContextProvider({ children }) {
 
     const logout = async () => {
         try {
-            await axios.post('/api/auth/logout', {}, { withCredentials: true });
+            await axios.post(`${apiUrl}/api/auth/logout`, {}, { withCredentials: true });
             setUser(null);
             navigate('/login'); // Redirect to login page
         } catch (error) {
