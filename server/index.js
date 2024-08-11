@@ -20,11 +20,16 @@ app.use(cookieParser());
 
 // CORS Configuration
 const allowedOrigins = process.env.NODE_ENV === 'production'
-    ? [process.env.ORIGIN_1, process.env.ORIGIN_2]
+    ? [
+        process.env.ORIGIN_1, 
+        process.env.ORIGIN_2, 
+        process.env.ORIGIN_3 // Add the third origin here
+      ]
     : ['http://localhost:5173']; // Local development
 
 app.use(cors({
     origin: (origin, callback) => {
+        console.log('Origin:', origin); // Debugging: Log the origin
         if (allowedOrigins.includes(origin) || !origin) { // Allow requests with no origin (e.g., Postman)
             callback(null, true);
         } else {
